@@ -39,8 +39,92 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/* sorry. *nix only */
+#include <fcntl.h>
+#include <unistd.h>
+
 #include "play.h"
 #include "typefind-hack.h"
+
+#define KERNAL_SIZE (8*1024)
+#define BASIC_SIZE (8*1024)
+#define CHARGEN_SIZE (4*1024)
+
+
+/*
+   Loads rom file. Return NULL if fails.
+ */
+static GByteArray *_load_rom (const gchar *name, gsize rom_size)
+{
+    GByteArray *a = NULL;
+    ssize_t len;
+    int fd = -1;
+    guint8 *buf = NULL;
+    if (name == NULL) goto load_rom_error;
+    fd  = open (name, O_RDONLY, 0);
+    if (fd < 0) goto load_rom_error;
+
+    buf = g_malloc0 (rom_size);
+    if (buf == NULL) goto load_rom_error;
+
+    a = g_byte_array_new ();
+    if (a == NULL) goto load_rom_error;
+
+    while ((len = read (fd, buf, rom_size)) > 0) {
+        g_byte_array_append (a, buf, len);
+    }
+
+    if (a->len != rom_size) {
+        g_byte_array_free (a, TRUE);
+        a = NULL;
+    }
+load_rom_error:
+    g_free (buf);
+    if (fd > -1) close (fd);
+    return a;
+}
+
+
+
+static void _on_element_added (GstBin *p0, GstBin *p1, GstElement *e, gpointer data)
+{
+    gchar *name = gst_element_get_name (e);
+    if (g_str_has_prefix (name, "siddecfp") == TRUE) {
+        g_object_set (G_OBJECT (e),
+#if 0
+            These can be tested with gst-launch
+
+            "tune", _tune_index,
+            "filter", _filter,
+            "sid-model", _sid_model,
+            "force-sid-model", _force_sid_model,
+            "c64-model", _c64_model,
+            "force-c64-model", _force_c64_model,
+            "cia-model", _cia_model,
+            "digi-boost", _digiboost,
+            "sampling-method", _sampling_method,
+            "filter-bias", _filter_bias,
+            "filter-curve-6581", _filter_curve_6581,
+            "filter-curve-8580", _filter_curve_8580,
+#endif
+            /*
+               Some RSIDs requires some ROM files. Like Wally Bebens Tetris.sid
+               requires kernal.bin kernal-906145-02.bin works fine with it.
+
+               Direct links:
+               https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/kernal.906145-02.bin
+               - try first without and then place to workingdir and rename to kernal.bin
+
+               https://hvsc.brona.dk/HVSC/C64Music/MUSICIANS/B/Beben_Wally/Tetris.sid
+               - use as any song
+             */
+
+            "basic", _load_rom ("basic.bin", BASIC_SIZE),
+            "kernal", _load_rom ("kernal.bin", KERNAL_SIZE),
+            "chargen", _load_rom ("chargen.bin", CHARGEN_SIZE),
+            NULL);
+    }
+}
 
 void
 play_uri (const gchar * uri)
@@ -70,6 +154,9 @@ play_uri (const gchar * uri)
 
   /* set URI to play back */
   g_object_set (playbin, "uri", uri, NULL);
+
+  /* to set some values for sidfp-plugin */
+  g_signal_connect (GST_BIN (playbin), "deep-element-added", G_CALLBACK (_on_element_added), NULL);
 
   /* and GO GO GO! */
   gst_element_set_state (GST_ELEMENT (playbin), GST_STATE_PLAYING);
