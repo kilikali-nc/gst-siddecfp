@@ -1,14 +1,50 @@
-# GStreamer template repository
+# GStreamer sidecfp plugin
 
-This git module contains template code for possible GStreamer projects.
+SidDecFP uses sidplayfp library version 2.x to play C64 SID audio files. It
+also fixes some problems original SidDec-plugin had.
+
+It misght have some features that are not wanted to GStreamer, like uploading
+ROM files using GByteArray (as property) or too hight priority.
+
+There are two kinds of SID-files. PSID and RSID. at least RSIDs¬ are straight
+playable with real hardware.
+
+I think GStreames has bug. It regognized only x-sid type files which are really
+PSID-files. It should bw x-psid and then x-rsid type files (RSID-files) are
+ignored.
+
+See gstreamer.patch possibly to get RSIDs to work. Patch is not tested, because
+I lost original pach and had no time to test it.
+
+gst-app make typefind hack to find right decoder without GStreamers support.
+¬
+Some RSIDs requires ROM files. Like Wally Bebens Tetris.sid¬ requires
+just kernal.bin, kernal-906145-02.bin works fine with it. See links to ¬
+¬
+Seems to be so that PSIDs does not require ROM files.¬
+¬
+* Links:¬
+¬
+Kernal rom bin: https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/kernal.906145-02.bin
+- try first without and then place to workingdir and rename to¬ kernal.bin
+¬
+RSID song: https://hvsc.brona.dk/HVSC/C64Music/MUSICIANS/B/Beben_Wally/Tetris.sid
+- RSID file, which works only with new plugin when using sidfpdec¬ with kernal.bin
+¬
+PSID song: https://hvsc.brona.dk/HVSC/C64Music/MUSICIANS/H/Hubbard_Rob/Commando.sid
+- PSID file, which works with original siddec decoder and¬without kernal.bin
 
 * gst-app :
-  basic meson-based layout for writing a GStreamer-based application.
+  Special siddecfp version of meson-based layout for writing a GStreamer-based
+  application which supports kernal, basic and chargen roms.
 
 * gst-plugin :
-  basic meson-based layout and basic filter code for writing a GStreamer plug-in.
+  siddecfp meson-based GStreamer plug-in.
 
 ## License
+
+Plugin is GPL2 as sidplayfp-library. It will be ugly-plugin as original
+siddec 
 
 This code is provided under a MIT license [MIT], which basically means "do
 with it as you wish, but don't blame us if it doesn't work". You can use
