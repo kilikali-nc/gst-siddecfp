@@ -108,15 +108,27 @@ static void _on_element_added (GstBin *p0, GstBin *p1, GstElement *e, gpointer d
             "filter-curve-8580", _filter_curve_8580,
 #endif
             /*
-               Some RSIDs requires some ROM files. Like Wally Bebens Tetris.sid
-               requires kernal.bin kernal-906145-02.bin works fine with it.
+               There are two kinds of SID-files. PSID and RSID. at least RSIDs
+               are straight playable with real hardware.
+
+               Some RSIDs requires ROM files. Like Wally Bebens Tetris.sid
+               requires kernal.bin, kernal-906145-02.bin works fine with it.
+
+               Seems to be so that PSIDs does not require ROM files.
 
                Direct links:
-               https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/kernal.906145-02.bin
-               - try first without and then place to workingdir and rename to kernal.bin
 
-               https://hvsc.brona.dk/HVSC/C64Music/MUSICIANS/B/Beben_Wally/Tetris.sid
-               - use as any song
+               Kernal rom bin: https://www.zimmers.net/anonftp/pub/cbm/firmware/computers/c64/kernal.906145-02.bin
+               - try first without and then place to workingdir and rename to
+                 kernal.bin
+
+               RSID song: https://hvsc.brona.dk/HVSC/C64Music/MUSICIANS/B/Beben_Wally/Tetris.sid
+               - RSID file, which works only with new plugin when using sidfpdec
+                 with kernal.bin
+
+               PSID song: https://hvsc.brona.dk/HVSC/C64Music/MUSICIANS/H/Hubbard_Rob/Commando.sid
+               - PSID file, which works with original siddec decoder and
+                 without kernal.bin
              */
 
             "basic", _load_rom ("basic.bin", BASIC_SIZE),
