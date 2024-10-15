@@ -1,0 +1,28 @@
+diff --git a/subprojects/gst-plugins-base/gst/typefind/gsttypefindfunctionsstartwith.c b/subprojects/gst-plugins-base/gst/typefind/gsttypefindfunctionsstartwith.c
+index c3e3e286db..4889979af0 100644
+--- a/subprojects/gst-plugins-base/gst/typefind/gsttypefindfunctionsstartwith.c
++++ b/subprojects/gst-plugins-base/gst/typefind/gsttypefindfunctionsstartwith.c
+@@ -115,6 +115,8 @@ TYPE_FIND_REGISTER_START_WITH_DEFINE (amr_wb, "audio/x-amr-wb-sh",
+     GST_RANK_PRIMARY, "amr", "#!AMR-WB", 7, GST_TYPE_FIND_MAXIMUM);
+ TYPE_FIND_REGISTER_START_WITH_DEFINE (sid, "audio/x-sid", GST_RANK_MARGINAL,
+     "sid", "PSID", 4, GST_TYPE_FIND_MAXIMUM);
++TYPE_FIND_REGISTER_START_WITH_DEFINE (rsid, "audio/x-rsid", GST_RANK_MARGINAL,
++    "sid", "RSID", 4, GST_TYPE_FIND_MAXIMUM);
+ TYPE_FIND_REGISTER_START_WITH_DEFINE (xcf, "image/x-xcf",
+     GST_RANK_SECONDARY, "xcf", "gimp xcf", 8, GST_TYPE_FIND_MAXIMUM);
+ TYPE_FIND_REGISTER_START_WITH_DEFINE (mng, "video/x-mng",
+diff --git a/subprojects/gst-plugins-base/tests/check/libs/pbutils.c b/subprojects/gst-plugins-base/tests/check/libs/pbutils.c
+index d6ed343011..1011a3f1d3 100644
+--- a/subprojects/gst-plugins-base/tests/check/libs/pbutils.c
++++ b/subprojects/gst-plugins-base/tests/check/libs/pbutils.c
+@@ -316,8 +316,8 @@ static const gchar *caps_strings[] = {
+   "audio/x-m4a", "audio/x-mod", "audio/x-mulaw", "audio/x-musepack",
+   "audio/x-nist", "audio/x-nsf", "audio/x-paris", "audio/x-qdm2",
+   "audio/x-ralf-mpeg4-generic", "audio/x-sds", "audio/x-shorten",
+-  "audio/x-sid", "audio/x-sipro", "audio/x-spc", "audio/x-speex",
+-  "audio/x-svx", "audio/x-tta", "audio/x-ttafile",
++  "audio/x-rsid", "audio/x-sid", "audio/x-sipro", "audio/x-spc",
++  "audio/x-speex", "audio/x-svx", "audio/x-tta", "audio/x-ttafile",
+   "audio/x-vnd.sony.atrac3", "audio/x-vorbis", "audio/x-voc", "audio/x-w64",
+   "audio/x-wav", "audio/x-wavpack", "audio/x-wavpack-correction",
+   "audio/x-wms", "audio/x-voxware", "audio/x-xi", "video/sp5x", "video/vivo",
