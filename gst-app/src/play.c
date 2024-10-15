@@ -40,6 +40,7 @@
  */
 
 #include "play.h"
+#include "typefind-hack.h"
 
 void
 play_uri (const gchar * uri)
@@ -47,11 +48,12 @@ play_uri (const gchar * uri)
   GstStateChangeReturn sret;
   GstElement *playbin;
   GstElement *audiosink;
-  GstElement *videosink;
   GstMessage *msg = NULL;
   GstBus *bus;
 
   g_print ("Trying to play %s ...\n", uri);
+
+  typefind_hack_init ();
 
   playbin = gst_element_factory_make ("playbin", "playbin");
   if (playbin == NULL)
@@ -65,12 +67,6 @@ play_uri (const gchar * uri)
   if (audiosink == NULL)
     goto no_autoaudiosink;
   g_object_set (playbin, "audio-sink", audiosink, NULL);
-
-  /* set video sink */
-  videosink = gst_element_factory_make ("autovideosink", "videosink");
-  if (videosink == NULL)
-    goto no_autovideosink;
-  g_object_set (playbin, "video-sink", videosink, NULL);
 
   /* set URI to play back */
   g_object_set (playbin, "uri", uri, NULL);
@@ -167,13 +163,6 @@ no_autoaudiosink:
     return;
   }
 
-no_autovideosink:
-  {
-    g_error ("Could not create GStreamer 'autovideosink' element. "
-        "Please install it");
-    /* not reached, g_error aborts */
-    return;
-  }
 }
 
 
